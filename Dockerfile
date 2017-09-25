@@ -1,5 +1,6 @@
+ARG BASE_IMAGE_NAME=tomcat
 ARG BASE_IMAGE_TAG=latest
-FROM tomcat:${BASE_IMAGE_TAG}
+FROM ${BASE_IMAGE_NAME}:${BASE_IMAGE_TAG}
 MAINTAINER Alessandro Parma<alessandro.parma@geo-solutions.it>
 ARG BASE_IMAGE_TAG
 
