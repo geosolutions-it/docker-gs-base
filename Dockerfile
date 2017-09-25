@@ -71,25 +71,26 @@ ONBUILD RUN \
     plugins=$( ls "${PLUGINS_DIR}" | grep "zip$" ) \
     && plugins_num=$( echo "$plugins" | wc -l );  \
     echo "Found: $plugins_num plugins \n Plugins list:\n\t $plugins" >> docker_build.log; \
-    if [ "$plugins_num" -ne 0 ]; then \
-      mkdir -p "$PLUGINS_TMPDIR"; \
-      for plugin in "$plugins"; do \
-        echo "\t Plugin: $plugin" >> docker_build.log \
-        && echo unzip "${PLUGINS_DIR}/$plugin" -d "$PLUGINS_TMPDIR" \
-        && unzip "${PLUGINS_DIR}/$plugin" -d "$PLUGINS_TMPDIR"; \
-      done; \
-    fi
+    mkdir -p "$PLUGINS_TMPDIR"; \
+    for plugin in "$plugins"; do \
+      if [ -f "${PLUGINS_DIR}/$plugin" ]; then \
+          echo "\t Plugin: $plugin" >> docker_build.log \
+          && unzip "${PLUGINS_DIR}/$plugin" -d "$PLUGINS_TMPDIR"; \
+      fi; \
+    done;
 
 ONBUILD RUN \
-      jars=$( ls "${PLUGINS_TMPDIR}" | grep "jar$" ); \
+      jars=$( ls -1 "${PLUGINS_TMPDIR}" | grep "jar$" ); \
       for jar in "$jars"; do \
-        mv -v "${PLUGINS_TMPDIR}/$jar" "${CATALINA_HOME}/webapps/geoserver/WEB-INF/lib/"; \
+        if [ -f "${PLUGINS_DIR}/$plugin" ]; then \
+          mv -v "${PLUGINS_TMPDIR}/$jar" "${CATALINA_HOME}/webapps/geoserver/WEB-INF/lib/"; \
+        fi; \
       done;
 # ONBUILD RUN rm -rf "${PLUGINS_TMPDIR}";
 
 
 # Include local data dir in image
-ONBUILD ARG INCLUDE_DATA_DIR=true
+ONBUILD ARG INCLUDE_DATA_DIR=false
 ONBUILD ENV INCLUDE_DATA_DIR $INCLUDE_DATA_DIR
 ONBUILD RUN if [ "$INCLUDE_DATA_DIR" = true ]; then \
     cp -a /tmp/resources/geoserver-datadir/* "${GEOSERVER_DATA_DIR}" \
