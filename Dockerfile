@@ -18,8 +18,10 @@ ONBUILD ADD resources $RESOURCES_DIR
 #------------- GeoServer Specific Stuff ---------------------------------------
 ONBUILD ENV CATALINA_BASE $CATALINA_HOME
 
-# Set env vars for GeoServer 
-ONBUILD ARG GEOSERVER_APP_NAME="geoserver.war"
+# Name of application to deploy into Tomcat's webapps dir
+ONBUILD ARG GEOSERVER_APP_NAME="geoserver"
+
+# Externalize various files and dirs
 ONBUILD ARG GEOSERVER_HOME="/var/geoserver"
 ONBUILD ARG GEOSERVER_DATA_DIR="${GEOSERVER_HOME}/datadir"
 ONBUILD ARG GEOSERVER_AUDIT_PATH="${GEOSERVER_HOME}/audits"
