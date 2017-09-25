@@ -61,21 +61,29 @@ ONBUILD RUN \
     ; fi
 
 # Move GeoServer war into Tomcat webapps dir
-ONBUILD RUN mv "${RESOURCES_DIR}/geoserver/geoserver.war" \
-            "${CATALINA_BASE}/webapps/${GEOSERVER_APP_NAME}.war" \
-            && unzip "${CATALINA_BASE}/webapps/${GEOSERVER_APP_NAME}.war" \
-            -d "${CATALINA_BASE}/webapps/${GEOSERVER_APP_NAME}"
+ONBUILD ARG INCLUDE_GS_WAR="true"
+ONBUILD ENV INCLUDE_GS_WAR "${INCLUDE_GS_WAR}"
+ONBUILD RUN if [ "$INCLUDE_GS_WAR" = true ]; then \
+              mv "${RESOURCES_DIR}/geoserver/geoserver.war" \
+              "${CATALINA_BASE}/webapps/${GEOSERVER_APP_NAME}.war" \
+              && unzip "${CATALINA_BASE}/webapps/${GEOSERVER_APP_NAME}.war" \
+              -d "${CATALINA_BASE}/webapps/${GEOSERVER_APP_NAME}"; \
+            fi;
 
 # Install any plugin zip files found in ${RESOURCES_DIR}/geoserver-plugins
-ONBUILD ENV PLUGINS_DIR "${RESOURCES_DIR}/geoserver-plugins"
-ONBUILD ENV PLUGINS_TMPDIR "${RESOURCES_DIR}/geoserver-plugins-unpacked"
+ONBUILD ARG PLUGINS_DIR="${RESOURCES_DIR}/geoserver-plugins"
+ONBUILD ENV PLUGINS_DIR "${PLUGINS_DIR}"
+
+ONBUILD ARG PLUGINS_TMPDIR="${RESOURCES_DIR}/geoserver-plugins-unpacked"
+ONBUILD ENV PLUGINS_TMPDIR "${PLUGINS_TMPDIR}"
+
 ONBUILD RUN \
     plugins=$( ls "${PLUGINS_DIR}" | grep "zip$" ) \
     && plugins_num=$( echo "$plugins" | wc -l );  \
     echo "Found: $plugins_num plugins \n Plugins list:\n\t $plugins" >> docker_build.log; \
     mkdir -p "$PLUGINS_TMPDIR"; \
     for plugin in "$plugins"; do \
-      if [ -f "${PLUGINS_DIR}/$plugin" ]; then \
+      if [ "$INCLUDE_GS_WAR" = true ] && [ -f "${PLUGINS_DIR}/$plugin" ]; then \
           echo "\t Plugin: $plugin" >> docker_build.log \
           && unzip "${PLUGINS_DIR}/$plugin" -d "$PLUGINS_TMPDIR"; \
       fi; \
