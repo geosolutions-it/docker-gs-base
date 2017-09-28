@@ -58,7 +58,7 @@ ONBUILD ARG TOMCAT_EXTRAS=false
 ONBUILD ENV TOMCAT_EXTRAS "$TOMCAT_EXTRAS"
 ONBUILD RUN \
     if [ "$TOMCAT_EXTRAS" = false ]; then \
-        rm -rf "${CATALINA_HOME}/webapps/*" \
+        rm -rfv "${CATALINA_HOME}/webapps/*" \
     ; fi
 
 # Move GeoServer war into Tomcat webapps dir
