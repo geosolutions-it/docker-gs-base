@@ -48,10 +48,11 @@ ONBUILD RUN mkdir -p \
     "${GEOWEBCACHE_CACHE_DIR}"  
 
 # Set default JAVA_OPTS (override as needed at run time)
-ONBUILD ENV JAVA_OPTS="-Xms1024m -Xmx1024m -XX:+UseParallelGC -XX:+UseParallelOldGC \
+ONBUILD ARG JAVA_OPTS="-Xms1024m -Xmx1024m -XX:+UseParallelGC -XX:+UseParallelOldGC \
     -DGEOSERVER_DATA_DIR=${GEOSERVER_DATA_DIR} \
     -DGEOWEBCACHE_CACHE_DIR=${GEOWEBCACHE_CACHE_DIR} \
     -DGEOSERVER_LOG_LOCATION=${GEOSERVER_LOG_LOCATION}/geoserver.log"
+ONBUILD ENV JAVA_OPTS "JAVA_OPTS"
 
 # Optionally remove Tomcat manager, docs, and examples
 ONBUILD ARG TOMCAT_EXTRAS=false
