@@ -12,6 +12,9 @@ RUN  dpkg-divert --local --rename --add /sbin/initctl
 # Install updates
 RUN apt-get -y update
 
+# Install full JDK 8
+RUN apt-get -y install openjdk-8-jdk
+
 #------------- Copy resources from local file system --------------------------
 ONBUILD ENV RESOURCES_DIR="/tmp/resources"
 ONBUILD ADD resources $RESOURCES_DIR
