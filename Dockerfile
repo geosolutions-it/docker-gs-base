@@ -120,7 +120,10 @@ ONBUILD RUN if [ "$INCLUDE_DATA_DIR" = true ]; then \
 #            && rm -rf "/var/lib/apt/lists/*"
 
 WORKDIR $CATALINA_HOME
+ONBUILD ADD catalina-wrapper.sh "${CATALINA_HOME}/bin"
 
 ENV TERM xterm
 
 EXPOSE 8080
+
+CMD ["catalina-wrapper.sh"]
