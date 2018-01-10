@@ -24,6 +24,7 @@ ONBUILD ENV CATALINA_BASE $CATALINA_HOME
 
 # Name of application to deploy into Tomcat's webapps dir
 ONBUILD ARG GEOSERVER_APP_NAME="geoserver"
+ONBUILD ENV GEOSERVER_APP_NAME "${GEOSERVER_APP_NAME}"
 
 # Externalize various files and dirs
 ONBUILD ARG GEOSERVER_HOME="/var/geoserver"
