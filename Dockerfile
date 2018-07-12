@@ -111,12 +111,14 @@ ONBUILD RUN \
     fi;
 
 ONBUILD RUN \
-      jars=$( ls -1 "${PLUGINS_TMPDIR}" | grep "jar$" ); \
-      for jar in "$jars"; do \
-        if [ -f "${PLUGINS_DIR}/$plugin" ]; then \
-          mv -v "${PLUGINS_TMPDIR}/$jar" "${CATALINA_HOME}/webapps/geoserver/WEB-INF/lib/"; \
-        fi; \
-      done;
+      if [ "INCLUDE_PLUGINS" = true ]; then \
+        jars=$( ls -1 "${PLUGINS_TMPDIR}  " | grep "jar$" ); \
+        for jar in "$jars"; do \
+          if [ -f "${PLUGINS_DIR}/$plugin" ]; then \
+            mv -v "${PLUGINS_TMPDIR}/$jar" "${CATALINA_HOME}/webapps/geoserver/WEB-INF/lib/"; \
+          fi; \
+        done; \
+      fi;
 
 # ONBUILD RUN rm -rf "${PLUGINS_TMPDIR}";
 
