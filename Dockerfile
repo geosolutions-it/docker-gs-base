@@ -95,7 +95,7 @@ ONBUILD RUN if [ "$INCLUDE_GS_WAR" = true ]; then \
             fi;
 
 ONBUILD RUN \
-    if [ "INCLUDE_PLUGINS" = true ]; then \
+    if [ "${INCLUDE_PLUGINS}" = true ]; then \
       unzip "${CATALINA_BASE}/webapps/${GEOSERVER_APP_NAME}.war" \
       -d "${CATALINA_BASE}/webapps/${GEOSERVER_APP_NAME}"; \
       plugins=$( ls "${PLUGINS_DIR}" | grep "zip$" ) \
@@ -111,7 +111,7 @@ ONBUILD RUN \
     fi;
 
 ONBUILD RUN \
-      if [ "INCLUDE_PLUGINS" = true ]; then \
+      if [ "${INCLUDE_PLUGINS}" = true ]; then \
         jars=$( ls -1 "${PLUGINS_TMPDIR}  " | grep "jar$" ); \
         for jar in "$jars"; do \
           if [ -f "${PLUGINS_DIR}/$plugin" ]; then \
