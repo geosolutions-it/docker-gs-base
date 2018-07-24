@@ -16,7 +16,7 @@ RUN apt-get -y update
 RUN apt-get -y install openjdk-8-jdk
 
 #------------- Copy resources from local file system --------------------------
-ONBUILD ENV RESOURCES_DIR="/tmp/resources"
+ONBUILD ENV RESOURCES_DIR="/resources"
 ONBUILD ADD resources $RESOURCES_DIR
 
 #------------- GeoServer Specific Stuff ---------------------------------------
@@ -95,30 +95,26 @@ ONBUILD RUN if [ "$INCLUDE_GS_WAR" = true ]; then \
             fi;
 
 ONBUILD RUN \
-    if [ "${INCLUDE_PLUGINS}" = true ]; then \
+    if [ "${INCLUDE_PLUGINS}" = "true" ]; then \
+      mkdir -p "$PLUGINS_TMPDIR"; \
       unzip "${CATALINA_BASE}/webapps/${GEOSERVER_APP_NAME}.war" \
       -d "${CATALINA_BASE}/webapps/${GEOSERVER_APP_NAME}"; \
-      plugins=$( ls "${PLUGINS_DIR}" | grep "zip$" ) \
+      plugins=$( ls -1 "${PLUGINS_DIR}" | grep "zip$" ) \
       && plugins_num=$( echo "$plugins" | wc -l );  \
-      echo "Found: $plugins_num plugins \n Plugins list:\n\t $plugins" >> docker_build.log; \
-      mkdir -p "$PLUGINS_TMPDIR"; \
-      for plugin in "$plugins"; do \
-        if [ "$INCLUDE_GS_WAR" = true ] && [ -f "${PLUGINS_DIR}/$plugin" ]; then \
-            echo "\t Plugin: $plugin" >> docker_build.log \
+      echo "Found: $plugins_num plugins \n Plugins list:\n\t $plugins"; \
+      for plugin in $plugins; do \
+        if [ "$INCLUDE_GS_WAR" = "true" ]; then \
+            echo "\t Plugin: $plugin" \
             && unzip "${PLUGINS_DIR}/$plugin" -d "$PLUGINS_TMPDIR"; \
+            jars=$( ls -1 "${PLUGINS_TMPDIR}" | grep "jar$" ); \
+            for jar in $jars; do \
+              if [ -f "${PLUGINS_DIR}/$plugin" ]; then \
+                mv -v "${PLUGINS_TMPDIR}/$jar" "${CATALINA_HOME}/webapps/geoserver/WEB-INF/lib/"; \
+              fi; \
+            done; \
         fi; \
       done; \
     fi;
-
-ONBUILD RUN \
-      if [ "${INCLUDE_PLUGINS}" = true ]; then \
-        jars=$( ls -1 "${PLUGINS_TMPDIR}  " | grep "jar$" ); \
-        for jar in "$jars"; do \
-          if [ -f "${PLUGINS_DIR}/$plugin" ]; then \
-            mv -v "${PLUGINS_TMPDIR}/$jar" "${CATALINA_HOME}/webapps/geoserver/WEB-INF/lib/"; \
-          fi; \
-        done; \
-      fi;
 
 # ONBUILD RUN rm -rf "${PLUGINS_TMPDIR}";
 
