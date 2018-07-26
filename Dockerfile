@@ -123,8 +123,8 @@ ONBUILD RUN \
 ONBUILD ARG INCLUDE_DATA_DIR=false
 ONBUILD ENV INCLUDE_DATA_DIR $INCLUDE_DATA_DIR
 ONBUILD RUN if [ "$INCLUDE_DATA_DIR" = true ]; then \
-    cp -a /tmp/resources/geoserver-datadir/* "${GEOSERVER_DATA_DIR}" \
-    && rm -rf /tmp/resources/geoserver-datadir \
+    cp -a /resources/geoserver-datadir/* "${GEOSERVER_DATA_DIR}" \
+    && rm -rf /resources/geoserver-datadir \
     ; fi
 
 #------------- Cleanup --------------------------------------------------------
