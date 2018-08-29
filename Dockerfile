@@ -109,7 +109,7 @@ ONBUILD RUN \
             jars=$( ls -1 "${PLUGINS_TMPDIR}" | grep "jar$" ); \
             for jar in $jars; do \
               if [ -f "${PLUGINS_DIR}/$plugin" ]; then \
-                mv -v "${PLUGINS_TMPDIR}/$jar" "${CATALINA_HOME}/webapps/geoserver/WEB-INF/lib/"; \
+                mv -v "${PLUGINS_TMPDIR}/$jar" "${CATALINA_BASE}/webapps/${GEOSERVER_APP_NAME}/WEB-INF/lib/"; \
               fi; \
             done; \
         fi; \
@@ -127,6 +127,14 @@ ONBUILD RUN if [ "$INCLUDE_DATA_DIR" = true ]; then \
     && rm -rf /resources/geoserver-datadir \
     ; fi
 
+# Add Marlin Renderer to WEB-INF/lib directory
+ONBUILD ARG ADD_MARLIN_RENDERER=false
+ONBUILD ENV ADD_MARLIN_RENDERER $ADD_MARLIN_RENDERER
+ONBUILD RUN if [ "$ADD_MARLIN_RENDERER" = true ]; then \
+    rm -f "${CATALINA_BASE}/webapps/${GEOSERVER_APP_NAME}/WEB-INF/lib/marlin*jar" \
+    && cp -a /resources/marlin/* "${CATALINA_BASE}/webapps/${GEOSERVER_APP_NAME}/WEB-INF/lib/" \
+    && rm -rf /resources/marlin/* \
+    ; fi
 #------------- Cleanup --------------------------------------------------------
 
 # Delete resources after installation
