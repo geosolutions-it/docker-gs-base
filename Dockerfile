@@ -135,6 +135,18 @@ ONBUILD RUN if [ "$ADD_MARLIN_RENDERER" = true ]; then \
     && cp -a /resources/marlin/* "${CATALINA_BASE}/webapps/${GEOSERVER_APP_NAME}/WEB-INF/lib/" \
     && rm -rf /resources/marlin/* \
     ; fi
+
+# Add extra fonts to JVM
+ONBUILD ARG ADD_EXTRA_FONTS=false
+ONBUILD ENV ADD_EXTRA_FONTS $ADD_EXTRA_FONTS
+ONBUILD RUN if [ "$ADD_EXTRA_FONTS" = true ]; then \
+    java_path=$(update-alternatives --list java); \
+    java_fonts_dir=$(dirname $java_path)/../lib/fonts; \
+    mkdir -p "$java_fonts_dir"; \
+    tar -xvf /resources/fonts/* -C "$java_fonts_dir" \
+    && rm -rf /resources/fonts/* \
+    ; fi
+
 #------------- Cleanup --------------------------------------------------------
 
 # Delete resources after installation
