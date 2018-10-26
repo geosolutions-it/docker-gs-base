@@ -131,8 +131,8 @@ ONBUILD RUN if [ "$INCLUDE_DATA_DIR" = true ]; then \
 ONBUILD ARG ADD_MARLIN_RENDERER=false
 ONBUILD ENV ADD_MARLIN_RENDERER $ADD_MARLIN_RENDERER
 ONBUILD RUN if [ "$ADD_MARLIN_RENDERER" = true ]; then \
-    find "${CATALINA_BASE}/webapps/${GEOSERVER_APP_NAME}/WEB-INF/lib" -name 'marlin*jar' -delete \
-    && cp -a /resources/marlin/* "${CATALINA_BASE}/webapps/${GEOSERVER_APP_NAME}/WEB-INF/lib/" \
+    find "${CATALINA_BASE}/webapps/${GEOSERVER_APP_NAME}/WEB-INF/lib" -name 'marlin*jar' -delete; \
+    cp -a /resources/marlin/* "${CATALINA_BASE}/webapps/${GEOSERVER_APP_NAME}/WEB-INF/lib/" \
     && rm -rf /resources/marlin/* \
     ; fi
 
