@@ -42,29 +42,42 @@ ONBUILD ENV GEOSERVER_LOG_LOCATION="${GEOSERVER_LOG_LOCATION}"
 ONBUILD ARG GEOWEBCACHE_CACHE_DIR="${GEOSERVER_HOME}/gwc_cache_dir"
 ONBUILD ENV GEOWEBCACHE_CACHE_DIR="${GEOWEBCACHE_CACHE_DIR}"
 
+ONBUILD ARG GEOWEBCACHE_CONFIG_DIR="${GEOSERVER_HOME}/gwc"
+ONBUILD ENV GEOWEBCACHE_CONFIG_DIR="${GEOWEBCACHE_CACHE_DIR}"
+
+ONBUILD ARG OOM_DUMP_DIR="${GEOSERVER_HOME}/memory_dumps"
+ONBUILD ENV OOM_DUMP_DIR="${OOM_DUMP_DIR}"
+
 # Print environment
 ONBUILD RUN \
     echo "" \
     "Resources Dir:  ${RESOURCES_DIR}\n"  \
     "GeoServer Home: ${GEOSERVER_HOME}\n" \
-    "DataDir Path:   ${GEOSERVER_DATA_DIR}    \n" \
-    "Audit Path:     ${GEOSERVER_HOME}/audits \n" \
-    "Log Location:   ${GEOSERVER_LOG_LOCATION}\n" \
-    "GWC CacheDir:   ${GEOWEBCACHE_CACHE_DIR} \n" \
+    "DataDir Path:   ${GEOSERVER_DATA_DIR}     \n" \
+    "Audit Path:     ${GEOSERVER_AUDIT_PATH}   \n" \
+    "Log Location:   ${GEOSERVER_LOG_LOCATION} \n" \
+    "GWC CacheDir:   ${GEOWEBCACHE_CACHE_DIR}  \n" \
+    "GWC ConfDir:    ${GEOWEBCACHE_CONFIG_DIR} \n" \
+    "MemDumps Dir:   ${OOM_DUMP_DIR} \n"  \
     >> docker_build.log
 
 # Create GeoServer directories
 ONBUILD RUN mkdir -p \
-    "${GEOSERVER_DATA_DIR}"     \
-    "${GEOSERVER_AUDIT_PATH}"   \
-    "${GEOSERVER_LOG_LOCATION}" \
-    "${GEOWEBCACHE_CACHE_DIR}"  
+    "${GEOSERVER_DATA_DIR}"      \
+    "${GEOSERVER_AUDIT_PATH}"    \
+    "${GEOSERVER_LOG_LOCATION}"  \
+    "${GEOWEBCACHE_CACHE_DIR}"   \
+    "${GEOWEBCACHE_CONFIG_DIR}"  \
+    "${OOM_DUMP_DIR}"  
 
 # Set default JAVA_OPTS (override as needed at run time)
 ONBUILD ARG JAVA_OPTS="-Xms1024m -Xmx1024m -XX:+UseParallelGC -XX:+UseParallelOldGC \
-    -DGEOSERVER_DATA_DIR=${GEOSERVER_DATA_DIR} \
-    -DGEOWEBCACHE_CACHE_DIR=${GEOWEBCACHE_CACHE_DIR} \
-    -DGEOSERVER_LOG_LOCATION=${GEOSERVER_LOG_LOCATION}/geoserver.log"
+    -DGEOSERVER_DATA_DIR=${GEOSERVER_DATA_DIR}                        \
+    -DGEOWEBCACHE_CACHE_DIR=${GEOWEBCACHE_CACHE_DIR}                  \
+    -DGEOSERVER_LOG_LOCATION=${GEOSERVER_LOG_LOCATION}/geoserver.log  \
+    -DGEOWEBCACHE_CONFIG_DIR=${GEOWEBCACHE_CONFIG_DIR}                \
+    -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=${OOM_DUMP_DIR}"
+
 ONBUILD ENV JAVA_OPTS "$JAVA_OPTS"
 
 # Optionally remove Tomcat manager, docs, and examples
