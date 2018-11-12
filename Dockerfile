@@ -62,10 +62,12 @@ ONBUILD RUN \
     >> docker_build.log
 
 # Create GeoServer directories
-ONBUILD RUN mkdir -p \
+ONBUILD RUN \
+    GEOSERVER_LOG_DIR=$(dirname ${GEOSERVER_LOG_LOCATION}); \
+    mkdir -p \
     "${GEOSERVER_DATA_DIR}"      \
     "${GEOSERVER_AUDIT_PATH}"    \
-    "${GEOSERVER_LOG_LOCATION}"  \
+    "${GEOSERVER_LOG_DIR}"  \
     "${GEOWEBCACHE_CACHE_DIR}"   \
     "${GEOWEBCACHE_CONFIG_DIR}"  \
     "${OOM_DUMP_DIR}"  
