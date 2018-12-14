@@ -114,6 +114,7 @@ ONBUILD RUN \
       mkdir -p "$PLUGINS_TMPDIR"; \
       unzip "${CATALINA_BASE}/webapps/${GEOSERVER_APP_NAME}.war" \
       -d "${CATALINA_BASE}/webapps/${GEOSERVER_APP_NAME}"; \
+      rm "${CATALINA_BASE}/webapps/${GEOSERVER_APP_NAME}.war" \
       plugins=$( ls -1 "${PLUGINS_DIR}" | grep "zip$" ) \
       && plugins_num=$( echo "$plugins" | wc -l );  \
       echo "Found: $plugins_num plugins \n Plugins list:\n\t $plugins"; \
