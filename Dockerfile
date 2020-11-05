@@ -1,7 +1,7 @@
 ARG BASE_IMAGE_NAME=tomcat
 ARG BASE_IMAGE_TAG=latest
 FROM ${BASE_IMAGE_NAME}:${BASE_IMAGE_TAG}
-MAINTAINER Alessandro Parma<alessandro.parma@geo-solutions.it>
+LABEL maintainer="alessandro.parma@geo-solutions.it"
 ARG BASE_IMAGE_TAG
 
 RUN  export DEBIAN_FRONTEND=noninteractive
