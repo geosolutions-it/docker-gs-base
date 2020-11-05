@@ -82,14 +82,6 @@ ONBUILD ARG JAVA_OPTS="-Xms1024m -Xmx1024m -XX:+UseParallelGC -XX:+UseParallelOl
 
 ONBUILD ENV JAVA_OPTS "$JAVA_OPTS"
 
-# Optionally remove Tomcat manager, docs, and examples
-ONBUILD ARG TOMCAT_EXTRAS=false
-ONBUILD ENV TOMCAT_EXTRAS "$TOMCAT_EXTRAS"
-ONBUILD RUN \
-    if [ "$TOMCAT_EXTRAS" = false ]; then \
-        rm -rfv "${CATALINA_HOME}/webapps/*" \
-    ; fi
-
 # Move GeoServer war into Tomcat webapps dir
 ONBUILD ARG INCLUDE_GS_WAR="true"
 ONBUILD ENV INCLUDE_GS_WAR "${INCLUDE_GS_WAR}"
