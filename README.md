@@ -1,5 +1,3 @@
-[![Build Status](http://build.geo-solutions.it/jenkins/buildStatus/icon?job=Docker-GeoServer-Base)](http://build.geo-solutions.it/jenkins/view/Docker/job/Docker-GeoServer-Base/)
-
 # docker-gs-base
 Base Docker image for GeoServer to be used as a template. The image built using Dockerfile contained in this repository is not meant to be used directly to run GeoServer but as a parent image for actual GeoServer images.
 Most of the Dockerfile statements consist of `ONBUILD` actions that are triggered at children images build time.

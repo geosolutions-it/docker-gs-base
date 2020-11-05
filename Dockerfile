@@ -1,7 +1,7 @@
 ARG BASE_IMAGE_NAME=tomcat
 ARG BASE_IMAGE_TAG=latest
 FROM ${BASE_IMAGE_NAME}:${BASE_IMAGE_TAG}
-MAINTAINER Alessandro Parma<alessandro.parma@geo-solutions.it>
+LABEL maintainer=alessandro.parma@geo-solutions.it
 ARG BASE_IMAGE_TAG
 
 RUN  export DEBIAN_FRONTEND=noninteractive
@@ -81,14 +81,6 @@ ONBUILD ARG JAVA_OPTS="-Xms1024m -Xmx1024m -XX:+UseParallelGC -XX:+UseParallelOl
     -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=${OOM_DUMP_DIR}"
 
 ONBUILD ENV JAVA_OPTS "$JAVA_OPTS"
-
-# Optionally remove Tomcat manager, docs, and examples
-ONBUILD ARG TOMCAT_EXTRAS=false
-ONBUILD ENV TOMCAT_EXTRAS "$TOMCAT_EXTRAS"
-ONBUILD RUN \
-    if [ "$TOMCAT_EXTRAS" = false ]; then \
-        rm -rfv "${CATALINA_HOME}/webapps/*" \
-    ; fi
 
 # Move GeoServer war into Tomcat webapps dir
 ONBUILD ARG INCLUDE_GS_WAR="true"
