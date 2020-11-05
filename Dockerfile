@@ -1,7 +1,7 @@
 ARG BASE_IMAGE_NAME=tomcat
 ARG BASE_IMAGE_TAG=latest
 FROM ${BASE_IMAGE_NAME}:${BASE_IMAGE_TAG}
-MAINTAINER Alessandro Parma<alessandro.parma@geo-solutions.it>
+LABEL maintainer=<alessandro.parma@geo-solutions.it>
 ARG BASE_IMAGE_TAG
 
 RUN  export DEBIAN_FRONTEND=noninteractive
@@ -91,11 +91,11 @@ ONBUILD RUN \
     ; fi
 
 # Move GeoServer war into Tomcat webapps dir
-ONBUILD ARG INCLUDE_GS_WAR="true"
+ONBUILD ARG INCLUDE_GS_WAR="false"
 ONBUILD ENV INCLUDE_GS_WAR "${INCLUDE_GS_WAR}"
 
 # Install any plugin zip files found in ${RESOURCES_DIR}/geoserver-plugins
-ONBUILD ARG INCLUDE_PLUGINS="true"
+ONBUILD ARG INCLUDE_PLUGINS="false"
 ONBUILD ENV INCLUDE_PLUGINS "${INCLUDE_PLUGINS}"
 
 ONBUILD ARG PLUGINS_DIR="${RESOURCES_DIR}/geoserver-plugins"
